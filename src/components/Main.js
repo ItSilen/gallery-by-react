@@ -214,7 +214,6 @@ var GalleryByReactApp = React.createClass({
 	},
 
 	getInitialState: function() {
-		alert(0)
 		return {
 			imgsArrangeArr: [
 				// {
@@ -279,13 +278,11 @@ var GalleryByReactApp = React.createClass({
 		this.Constant.vPosRange.x[1] = halfStageW;
 
 		this.rearrange(0);
-		alert(3)
 	},
 
 	render: function() {
 		var controllUnits = [],
 			imgFigures = [];
-		alert(1)
 		imageDatas.forEach(function(value, index) {
 
 			if (!this.state.imgsArrangeArr[index]) {
@@ -296,7 +293,7 @@ var GalleryByReactApp = React.createClass({
 							top: 0
 						},
 						rotate: 0,
-						isInverse: true,
+						isInverse: false,
 						isCenter: false
 					}
 					// alert(index)
@@ -305,7 +302,6 @@ var GalleryByReactApp = React.createClass({
 				data={value} arrange={this.state.imgsArrangeArr[index]}
 				inverse = {this.inverse(index)} center={this.center(index)}/>);
 		}.bind(this));
-		alert(2)
 		return (
 			<section className="stage" ref="stage">
       	<section className="img-sec">
