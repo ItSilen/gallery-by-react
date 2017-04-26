@@ -85,6 +85,33 @@ var ImgFigure = React.createClass({
 	}
 })
 
+// 控制组件
+var ControllerUnit = React.createClass({
+	handleClick: function(e) {
+		// 如果点击的是当前正在选中态的按钮，则翻转图片否则将对应的图片居中。
+		if (this.props.arrange.isCenter) {
+			this.props.inverse();
+		} else {
+			this.props.center();
+		}
+		e.stopPropagation();
+		e.preventDefault();
+	},
+	render: function() {
+		var controllerUnitClassName = "controller-unit";
+		// 如果对应的是居中的图片，显示控制按钮的居中态
+		if (this.props.arrange.isCenter) {
+			controllerUnitClassName += " is-center";
+			// 如果同时对应的是翻转图片，显示控制按钮的翻转态。
+			if (this.props.arrange.isInverse) {
+				controllerUnitClassName += " is-inverse";
+			}
+		}
+		return (
+			<span className={controllerUnitClassName} onClick={this.handleClick}></span>
+		);
+	}
+})
 
 var GalleryByReactApp = React.createClass({
 	Constant: {
@@ -137,11 +164,11 @@ var GalleryByReactApp = React.createClass({
 			vPosRangeTopY = vPosRange.topY,
 			vPosRangeX = vPosRange.x,
 
-			/* 存储我们布局在上侧区域的图片的状态信息，取一个或者不取，随机数取整值就会变为0和1？？：1和2吧*/
+			// 存储我们布局在上侧区域的图片的状态信息，取一个或者不取，随机数取整值就会变为0和1？？：1和2吧
 			imgsArrangeTopArr = [],
 			topImgNum = Math.floor(Math.random() * 2),
 			topImgSpliceIndex = 0,
-			/* 居中图片的状态信息*/
+			// 居中图片的状态信息
 			imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex, 1);
 
 		// 首先居中我们centerIndex的图片,正中央的图片它不需要旋转
@@ -151,11 +178,11 @@ var GalleryByReactApp = React.createClass({
 			isCenter: true
 		}
 
-		/* 取出要布局上侧的图片的状态信息*/
+		//取出要布局上侧的图片的状态信息
 		topImgSpliceIndex = Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));
 		imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex, topImgNum);
 
-		/* 取出来后就要布局位于上侧的图片*/
+		// 取出来后就要布局位于上侧的图片
 		imgsArrangeTopArr.forEach(function(value, index) {
 			imgsArrangeTopArr[index] = {
 				pos: {
@@ -168,10 +195,10 @@ var GalleryByReactApp = React.createClass({
 		});
 
 
-		/* 布局左右两侧的图片*/
+		//布局左右两侧的图片
 		for (var i = 0, j = imgsArrangeArr.length, k = j / 2; i < j; i++) {
 			var hPosRangeLORX = null;
-			/* 前半部分布局左边，右半部分布局右边*/
+			// 前半部分布局左边，右半部分布局右边
 			if (i < k) {
 				hPosRangeLORX = hPosRangeLeftSecX;
 			} else {
@@ -188,7 +215,7 @@ var GalleryByReactApp = React.createClass({
 		};
 
 
-		/* 位置信息都处理完了，重新的把他们合并起来,也就是把剔除的重新插回去*/
+		// 位置信息都处理完了，重新的把他们合并起来,也就是把剔除的重新插回去
 		if (imgsArrangeTopArr && imgsArrangeTopArr[0]) {
 			imgsArrangeArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0])
 		}
@@ -239,7 +266,7 @@ var GalleryByReactApp = React.createClass({
 	// 	alert("un")
 	// },
 
-	/* 组件加载以后，为每张图片计算其位置的范围。*/
+	// 组件加载以后，为每张图片计算其位置的范围。
 	componentDidMount: function() {
 
 		/* 首先拿到舞台的大小*/
@@ -281,36 +308,39 @@ var GalleryByReactApp = React.createClass({
 	},
 
 	render: function() {
-		var controllUnits = [],
+		var controllerUnits = [],
 			imgFigures = [];
 		imageDatas.forEach(function(value, index) {
-
 			if (!this.state.imgsArrangeArr[index]) {
 
 				this.state.imgsArrangeArr[index] = {
-						pos: {
-							left: 0,
-							top: 0
-						},
-						rotate: 0,
-						isInverse: false,
-						isCenter: false
-					}
-					// alert(index)
+					pos: {
+						left: 0,
+						top: 0
+					},
+					rotate: 0,
+					isInverse: false,
+					isCenter: false
+				}
 			};
 			imgFigures.push(<ImgFigure ref={"imgFigure"+index} 
 				data={value} arrange={this.state.imgsArrangeArr[index]}
 				inverse = {this.inverse(index)} center={this.center(index)}/>);
+
+			controllerUnits.push(<ControllerUnit arrange={this.state.imgsArrangeArr[index]} 
+				inverse={this.inverse(index)} 
+				center={this.center(index)}/>);
 		}.bind(this));
+
 		return (
 			<section className="stage" ref="stage">
-      	<section className="img-sec">
-      		{imgFigures}
-      	</section>
-      	<nav className="controller-nav">
-      		{controllUnits}
-      	</nav>
-      </section>
+		  	<section className="img-sec">
+		  		{imgFigures}
+		  	</section>
+		  	<nav className="controller-nav">
+		  		{controllerUnits}
+		  	</nav>
+		  </section>
 		)
 	}
 })
