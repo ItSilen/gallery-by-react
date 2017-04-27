@@ -59,8 +59,8 @@ var ImgFigure = React.createClass({
 
 		// 如果图片的旋转角度有值并且不为0，添加旋转角度
 		if (this.props.arrange.rotate) {
-			(["-moz-", "-ms-", "-webkit-", "-o-", ""]).forEach(function(value) {
-				styleObj[value + "transform"] = "rotate(" + this.props.arrange.rotate + "deg)";
+			(["MozTransform", "msTransform", "WebkitTransform", "transfrom"]).forEach(function(value) {
+				styleObj[value] = "rotate(" + this.props.arrange.rotate + "deg)";
 			}.bind(this))
 		}
 
@@ -214,7 +214,6 @@ var GalleryByReactApp = React.createClass({
 			};
 		};
 
-
 		// 位置信息都处理完了，重新的把他们合并起来,也就是把剔除的重新插回去
 		if (imgsArrangeTopArr && imgsArrangeTopArr[0]) {
 			imgsArrangeArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0])
@@ -323,11 +322,11 @@ var GalleryByReactApp = React.createClass({
 					isCenter: false
 				}
 			};
-			imgFigures.push(<ImgFigure ref={"imgFigure"+index} 
+			imgFigures.push(<ImgFigure key={index} ref={"imgFigure"+index} 
 				data={value} arrange={this.state.imgsArrangeArr[index]}
 				inverse = {this.inverse(index)} center={this.center(index)}/>);
 
-			controllerUnits.push(<ControllerUnit arrange={this.state.imgsArrangeArr[index]} 
+			controllerUnits.push(<ControllerUnit key={index} arrange={this.state.imgsArrangeArr[index]} 
 				inverse={this.inverse(index)} 
 				center={this.center(index)}/>);
 		}.bind(this));
